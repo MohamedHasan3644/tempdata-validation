@@ -1,0 +1,37 @@
+@page "/keep-once"
+
+<PageTitle>Read and keep TempData</PageTitle>
+
+<div class="page-heading">
+    <span class="eyebrow">Cascading ITempData</span>
+    <h1>Read and keep once</h1>
+</div>
+
+<dl class="result-grid" data-operation="get-keep">
+    <dt>Operations</dt>
+    <dd><code>Get("@TempDataKeys.Message")</code>, then <code>Keep("@TempDataKeys.Message")</code></dd>
+    <dt>Read result</dt>
+    <dd><output id="keep-message" data-has-value="@(Message is not null ? "true" : "false")">@Message</output></dd>
+    <dt>Request UTC</dt>
+    <dd><time datetime="@RequestUtc.ToString("O")">@RequestUtc.ToString("O")</time></dd>
+</dl>
+
+<div class="actions">
+    <a class="btn btn-primary" href="read">Continue to ordinary reader</a>
+    <a class="btn btn-link" href="">Seed another message</a>
+</div>
+
+@code {
+    [CascadingParameter]
+    public ITempData? TempData { get; set; }
+
+    private string? Message { get; set; }
+
+    private DateTimeOffset RequestUtc { get; } = DateTimeOffset.UtcNow;
+
+    protected override void OnInitialized()
+    {
+        Message = TempData?.Get(TempDataKeys.Message) as string;
+        TempData?.Keep(TempDataKeys.Message);
+    }
+}

@@ -1,0 +1,37 @@
+@page "/peek"
+
+<PageTitle>Peek TempData</PageTitle>
+
+<div class="page-heading">
+    <span class="eyebrow">Cascading ITempData</span>
+    <h1>Non-consuming reader</h1>
+</div>
+
+<dl class="result-grid" data-operation="peek">
+    <dt>Operation</dt>
+    <dd><code>Peek("@TempDataKeys.Message")</code></dd>
+    <dt>Peek result</dt>
+    <dd><output id="peek-message" data-has-value="@(Message is not null ? "true" : "false")">@Message</output></dd>
+    <dt>Request UTC</dt>
+    <dd><time datetime="@RequestUtc.ToString("O")">@RequestUtc.ToString("O")</time></dd>
+</dl>
+
+<div class="actions">
+    <a class="btn btn-outline-primary" href="peek">Reload peek reader</a>
+    <a class="btn btn-outline-secondary" href="read">Continue to ordinary reader</a>
+    <a class="btn btn-link" href="">Seed another message</a>
+</div>
+
+@code {
+    [CascadingParameter]
+    public ITempData? TempData { get; set; }
+
+    private string? Message { get; set; }
+
+    private DateTimeOffset RequestUtc { get; } = DateTimeOffset.UtcNow;
+
+    protected override void OnInitialized()
+    {
+        Message = TempData?.Peek(TempDataKeys.Message) as string;
+    }
+}

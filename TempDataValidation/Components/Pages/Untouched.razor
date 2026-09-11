@@ -1,0 +1,24 @@
+@page "/untouched"
+
+<PageTitle>Do not touch TempData</PageTitle>
+
+<div class="page-heading">
+    <span class="eyebrow">Control request</span>
+    <h1>TempData untouched</h1>
+</div>
+
+<dl class="result-grid" data-operation="untouched">
+    <dt>Operation</dt>
+    <dd>No cascading value, parameter binding, read, peek, keep, or write</dd>
+    <dt>Request UTC</dt>
+    <dd><time datetime="@RequestUtc.ToString("O")">@RequestUtc.ToString("O")</time></dd>
+</dl>
+
+<div class="actions">
+    <a class="btn btn-primary" href="read">Continue to ordinary reader</a>
+    <a class="btn btn-link" href="">Seed another message</a>
+</div>
+
+@code {
+    private DateTimeOffset RequestUtc { get; } = DateTimeOffset.UtcNow;
+}

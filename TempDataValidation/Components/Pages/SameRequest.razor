@@ -1,0 +1,67 @@
+@page "/same-request"
+
+<PageTitle>Write and read TempData in one request</PageTitle>
+
+<div class="page-heading">
+    <span class="eyebrow">No redirect</span>
+    <h1>Write and read in the same request</h1>
+</div>
+
+<form method="post" @formname="SameRequest" @onsubmit="Submit" class="validation-form">
+    <AntiforgeryToken />
+
+    <div class="mb-3">
+        <label for="same-request-message" class="form-label">Message</label>
+        <input id="same-request-message" name="Message" value="@Message" class="form-control" autocomplete="off" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Write and read twice</button>
+</form>
+
+@if (Submitted)
+{
+    <dl class="result-grid mt-4" data-operation="write-get-twice">
+        <dt>Operations</dt>
+        <dd>Set the indexer, then call <code>Get</code> twice before this response completes</dd>
+        <dt>First read</dt>
+        <dd><output id="same-request-first-read" data-has-value="@(FirstRead is not null ? "true" : "false")">@FirstRead</output></dd>
+        <dt>Second read</dt>
+        <dd><output id="same-request-second-read" data-has-value="@(SecondRead is not null ? "true" : "false")">@SecondRead</output></dd>
+        <dt>Request UTC</dt>
+        <dd><time datetime="@RequestUtc.ToString("O")">@RequestUtc.ToString("O")</time></dd>
+    </dl>
+}
+
+<div class="actions mt-4">
+    <a class="btn btn-outline-secondary" href="read">Check the next request</a>
+    <a class="btn btn-link" href="">Seed a redirect flow</a>
+</div>
+
+@code {
+    [CascadingParameter]
+    public ITempData? TempData { get; set; }
+
+    [SupplyParameterFromForm]
+    private string? Message { get; set; }
+
+    private string? FirstRead { get; set; }
+
+    private string? SecondRead { get; set; }
+
+    private bool Submitted { get; set; }
+
+    private DateTimeOffset RequestUtc { get; } = DateTimeOffset.UtcNow;
+
+    protected override void OnInitialized()
+    {
+        Message ??= $"same-request-{DateTime.UtcNow:yyyyMMdd-HHmmssfff}";
+    }
+
+    private void Submit()
+    {
+        TempData![TempDataKeys.Message] = Message;
+        FirstRead = TempData.Get(TempDataKeys.Message) as string;
+        SecondRead = TempData.Get(TempDataKeys.Message) as string;
+        Submitted = true;
+    }
+}

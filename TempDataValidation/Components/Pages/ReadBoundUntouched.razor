@@ -1,0 +1,32 @@
+@page "/read-bound-untouched"
+
+<PageTitle>Retain bound TempData</PageTitle>
+
+<div class="page-heading">
+    <span class="eyebrow">SupplyParameterFromTempData</span>
+    <h1>Bound reader that leaves the property untouched</h1>
+</div>
+
+<dl class="result-grid" data-operation="bound-untouched">
+    <dt>Operation</dt>
+    <dd>Read the supplied property without changing it</dd>
+    <dt>Displayed message</dt>
+    <dd><output id="bound-untouched-message" data-has-value="@(Message is not null ? "true" : "false")">@Message</output></dd>
+    <dt>Writeback value</dt>
+    <dd><output id="bound-writeback-value" data-has-value="@(Message is not null ? "true" : "false")">@Message</output></dd>
+    <dt>Request UTC</dt>
+    <dd><time datetime="@RequestUtc.ToString("O")">@RequestUtc.ToString("O")</time></dd>
+</dl>
+
+<div class="actions">
+    <a class="btn btn-outline-primary" href="read-bound-untouched">Reload unchanged reader</a>
+    <a class="btn btn-outline-secondary" href="read-bound-clear">Clear with bound reader</a>
+    <a class="btn btn-link" href="">Seed another message</a>
+</div>
+
+@code {
+    [SupplyParameterFromTempData(Name = TempDataKeys.Message)]
+    public string? Message { get; set; }
+
+    private DateTimeOffset RequestUtc { get; } = DateTimeOffset.UtcNow;
+}

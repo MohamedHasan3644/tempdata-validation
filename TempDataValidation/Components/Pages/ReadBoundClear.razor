@@ -1,0 +1,39 @@
+@page "/read-bound-clear"
+
+<PageTitle>Consume bound TempData</PageTitle>
+
+<div class="page-heading">
+    <span class="eyebrow">SupplyParameterFromTempData</span>
+    <h1>Bound reader that clears the property</h1>
+</div>
+
+<dl class="result-grid" data-operation="bound-clear">
+    <dt>Operation</dt>
+    <dd>Copy the supplied property, then set it to <code>null</code></dd>
+    <dt>Displayed message</dt>
+    <dd><output id="bound-clear-message" data-has-value="@(DisplayMessage is not null ? "true" : "false")">@DisplayMessage</output></dd>
+    <dt>Property after copy</dt>
+    <dd><code>@(Message is null ? "null" : Message)</code></dd>
+    <dt>Request UTC</dt>
+    <dd><time datetime="@RequestUtc.ToString("O")">@RequestUtc.ToString("O")</time></dd>
+</dl>
+
+<div class="actions">
+    <a class="btn btn-outline-primary" href="read-bound-clear">Reload bound reader</a>
+    <a class="btn btn-link" href="">Seed another message</a>
+</div>
+
+@code {
+    [SupplyParameterFromTempData(Name = TempDataKeys.Message)]
+    public string? Message { get; set; }
+
+    private string? DisplayMessage { get; set; }
+
+    private DateTimeOffset RequestUtc { get; } = DateTimeOffset.UtcNow;
+
+    protected override void OnInitialized()
+    {
+        DisplayMessage = Message;
+        Message = null;
+    }
+}

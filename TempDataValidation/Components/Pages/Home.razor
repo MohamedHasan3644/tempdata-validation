@@ -1,0 +1,92 @@
+﻿@page "/"
+@inject NavigationManager NavigationManager
+
+<PageTitle>Seed TempData message</PageTitle>
+
+<div class="page-heading">
+	<span class="eyebrow">Validation scenario #69134</span>
+	<h1>Seed a TempData message</h1>
+	<p class="lead">Each submission stores one identifiable message and redirects to a static SSR operation.</p>
+</div>
+
+<form method="post" @formname="SeedMessage" @onsubmit="Submit" class="validation-form">
+	<AntiforgeryToken />
+
+	<div class="mb-3">
+		<label for="message" class="form-label">Message</label>
+		<input id="message" name="Message" value="@Message" class="form-control" autocomplete="off" />
+	</div>
+
+	<div class="mb-3">
+		<label for="target-route" class="form-label">Redirect target</label>
+		<select id="target-route" name="TargetRoute" class="form-select">
+			@foreach (var target in Targets)
+			{
+				<option value="@target.Route" selected="@(target.Route == TargetRoute)">@target.Label</option>
+			}
+		</select>
+	</div>
+
+	<button type="submit" class="btn btn-primary">Store and redirect</button>
+</form>
+
+<section class="mt-5" aria-labelledby="available-operations">
+	<h2 id="available-operations">Available operations</h2>
+	<div class="table-responsive">
+		<table class="table align-middle">
+			<thead>
+				<tr>
+					<th scope="col">Target</th>
+					<th scope="col">Operation</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var target in Targets)
+				{
+					<tr>
+						<td><a href="@target.Route">@target.Label</a></td>
+						<td><code>@target.Operation</code></td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+</section>
+
+@code {
+	private static readonly SeedTarget[] Targets =
+	[
+		new("/read", "Consume with ITempData", "Get, then Get again"),
+		new("/read-bound-clear", "Bound property, then clear", "SupplyParameterFromTempData; set null"),
+		new("/read-bound-untouched", "Bound property, untouched", "SupplyParameterFromTempData; write back"),
+		new("/peek", "Peek", "Peek"),
+		new("/keep-once", "Read and keep once", "Get; Keep(key)"),
+		new("/untouched", "Do not touch TempData", "No TempData access"),
+		new("/peek-keep", "Peek, then keep", "Peek; Keep(key)")
+	];
+
+	[CascadingParameter]
+	public ITempData? TempData { get; set; }
+
+	[SupplyParameterFromForm]
+	private string? Message { get; set; }
+
+	[SupplyParameterFromForm]
+	private string? TargetRoute { get; set; }
+
+	protected override void OnInitialized()
+	{
+		Message ??= $"message-{DateTime.UtcNow:yyyyMMdd-HHmmssfff}";
+		TargetRoute ??= Targets[0].Route;
+	}
+
+	private void Submit()
+	{
+		var target = Targets.FirstOrDefault(candidate => candidate.Route == TargetRoute) ?? Targets[0];
+
+		TempData![TempDataKeys.Message] = Message;
+		NavigationManager.NavigateTo(target.Route, forceLoad: true);
+	}
+
+	private sealed record SeedTarget(string Route, string Label, string Operation);
+}

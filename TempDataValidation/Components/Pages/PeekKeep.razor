@@ -1,0 +1,37 @@
+@page "/peek-keep"
+
+<PageTitle>Peek and keep TempData</PageTitle>
+
+<div class="page-heading">
+    <span class="eyebrow">Cascading ITempData</span>
+    <h1>Peek, then keep the same key</h1>
+</div>
+
+<dl class="result-grid" data-operation="peek-keep">
+    <dt>Operations</dt>
+    <dd><code>Peek("@TempDataKeys.Message")</code>, then <code>Keep("@TempDataKeys.Message")</code></dd>
+    <dt>Peek result</dt>
+    <dd><output id="peek-keep-message" data-has-value="@(Message is not null ? "true" : "false")">@Message</output></dd>
+    <dt>Request UTC</dt>
+    <dd><time datetime="@RequestUtc.ToString("O")">@RequestUtc.ToString("O")</time></dd>
+</dl>
+
+<div class="actions">
+    <a class="btn btn-primary" href="read">Continue to ordinary reader</a>
+    <a class="btn btn-link" href="">Seed another message</a>
+</div>
+
+@code {
+    [CascadingParameter]
+    public ITempData? TempData { get; set; }
+
+    private string? Message { get; set; }
+
+    private DateTimeOffset RequestUtc { get; } = DateTimeOffset.UtcNow;
+
+    protected override void OnInitialized()
+    {
+        Message = TempData?.Peek(TempDataKeys.Message) as string;
+        TempData?.Keep(TempDataKeys.Message);
+    }
+}

@@ -1,0 +1,41 @@
+@page "/read"
+
+<PageTitle>Consume TempData</PageTitle>
+
+<div class="page-heading">
+    <span class="eyebrow">Cascading ITempData</span>
+    <h1>Ordinary consuming reader</h1>
+</div>
+
+<dl class="result-grid" data-operation="get-twice">
+    <dt>Operation</dt>
+    <dd><code>Get("@TempDataKeys.Message")</code> twice</dd>
+    <dt>First read</dt>
+    <dd><output id="first-read" data-has-value="@(FirstRead is not null ? "true" : "false")">@FirstRead</output></dd>
+    <dt>Second read</dt>
+    <dd><output id="second-read" data-has-value="@(SecondRead is not null ? "true" : "false")">@SecondRead</output></dd>
+    <dt>Request UTC</dt>
+    <dd><time datetime="@RequestUtc.ToString("O")">@RequestUtc.ToString("O")</time></dd>
+</dl>
+
+<div class="actions">
+    <a class="btn btn-outline-primary" href="read">Reload consuming reader</a>
+    <a class="btn btn-link" href="">Seed another message</a>
+</div>
+
+@code {
+    [CascadingParameter]
+    public ITempData? TempData { get; set; }
+
+    private string? FirstRead { get; set; }
+
+    private string? SecondRead { get; set; }
+
+    private DateTimeOffset RequestUtc { get; } = DateTimeOffset.UtcNow;
+
+    protected override void OnInitialized()
+    {
+        FirstRead = TempData?.Get(TempDataKeys.Message) as string;
+        SecondRead = TempData?.Get(TempDataKeys.Message) as string;
+    }
+}

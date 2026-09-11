@@ -1,0 +1,68 @@
+﻿<script type="module" src="@Assets["Components/Layout/NavMenu.razor.js"]"></script>
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">TempData RC1</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div id="nav-scrollable" class="nav-scrollable">
+    <nav class="nav flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Seed message
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="read">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Consume
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="read-bound-clear">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Bound clear
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="read-bound-untouched">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Bound untouched
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="peek">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Peek
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="keep-once">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Keep once
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="untouched">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Untouched
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="peek-keep">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Peek + keep
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="same-request">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Same request
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
